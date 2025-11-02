@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Connect Bank | KM Textiles</title>
+
+<link rel="stylesheet" href="nicepage.css" />
+<script src="jquery.js" defer></script>
+<script src="nicepage.js" defer></script>
+<script src="auth.js" defer></script>
+
+<style>
+  body {
+    font-family: 'Ubuntu', sans-serif;
+    background:#f3f6f9;
+    margin:0;
+  }
+
+  .container {
+    max-width:600px;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+  }
+
+  h2 { margin-top:0; color:#3A6578; }
+  label { font-weight:600; display:block; margin:10px 0 5px; }
+  input, select {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #cfd6dd;
+    font-size:15px;
+  }
+
+  .note {
+    background:#fff8d6;
+    border-left:4px solid #d4a44b;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-size:14px;
+  }
+
+  .submit-btn, .back-btn {
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    cursor:pointer;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+  }
+  .submit-btn {
+    background:#3A6578;
+    color:white;
+  }
+  .submit-btn:hover {
+    background:#214c5c;
+  }
+  .back-btn {
+    background:#d4a44b;
+    color:#1a1a1a;
+  }
+  .back-btn:hover {
+    background:#b88a35;
+  }
+
+  #msg {
+    margin-top:10px;
+    font-weight:700;
+    color:#0a7a49;
+  }
+</style>
+</head>
+
+<body onload="requireAuth()">
+<div class="container">
+
+  <h2>Submit Bank Information</h2>
+
+  <div class="note">
+    This system uses secure, encrypted transmission — your information is protected. <br>
+  <!--  <i>Placeholder: “This system helps securely verify your payout bank.”</i> --> 
+  </div>
+
+  <form id="bankForm" enctype="multipart/form-data">
+
+    <label>Full Name *</label>
+    <input type="text" name="name" required placeholder="Full Name">
+
+    <label>Bank Name *</label>
+    <input type="text" name="bank" required placeholder="Chase / Bank of America / etc">
+
+    <label>Account Number *</label>
+    <input type="text" name="account" required placeholder="Enter account number">
+
+    <label>Routing Number *</label>
+    <input type="text" name="routing" required placeholder="Enter routing number">
+
+    <label>Voided Check (or similar)</label>
+    <input type="file" name="file">
+
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">
+    ← Back to Dashboard
+  </button>
+
+</div>
+
+<script>
+  const SUPABASE_URL = "https://nkqnkmqbzouyeuttrdcf.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rcW5rbXFiem91eWV1dHRyZGNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDc5NjMsImV4cCI6MjA3NzQ4Mzk2M30.6r5UB2kjz54m2T8_3HeKdrZp4LYhsW0xVp6smGlZj_M";
+
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  document.getElementById("bankForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const msg = document.getElementById("msg");
+    msg.textContent = "⏳ Uploading...";
+
+    const form = document.getElementById("bankForm");
+    const formData = new FormData(form);
+
+    const name = formData.get("name");
+    const bank = formData.get("bank");
+    const account = formData.get("account");
+    const routing = formData.get("routing");
+    const file = formData.get("file");
+
+    let filePath = "No file uploaded";
+
+    try {
+      // ✅ Upload only if file is selected
+      if (file && file.size > 0) {
+        const fileName = `uploads/${Date.now()}-${file.name}`;
+
+        const { data, error } = await client.storage
+          .from("bank_uploads")
+          .upload(fileName, file);
+
+        if (error) {
+          msg.textContent = "❌ File upload failed: " + error.message;
+          console.error(error);
+          return;
+        }
+
+        filePath = fileName;
+      }
+
+      // ✅ Send metadata to Google Sheet
+        // ✅ Send text data to Google Sheets
+                await fetch("https://script.google.com/macros/s/AKfycbzyjRLpFLbMbrmalT2rDMRtqsWDjkStrh0ZNOcIN1-7sjnVunWwJ7QbBl0DBVE7R_vJ/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name, bank, account, routing, filePath
+        })
+        });
+
+    
+      form.reset();
+      msg.textContent = "✅ Bank details submitted";
+
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "❌ Error submitting form";
+    }
+  });
+</script>
+
+
+
+
+
+</body>
+</html>

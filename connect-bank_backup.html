@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Connect Bank | KM Textiles</title>
+
+<link rel="stylesheet" href="nicepage.css" />
+<script src="jquery.js" defer></script>
+<script src="nicepage.js" defer></script>
+<script src="auth.js" defer></script>
+
+<style>
+  body {
+    font-family: 'Ubuntu', sans-serif;
+    background:#f3f6f9;
+    margin:0;
+  }
+
+  .container {
+    max-width:600px;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+  }
+
+  h2 { margin-top:0; color:#3A6578; }
+  label { font-weight:600; display:block; margin:10px 0 5px; }
+  input, select {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #cfd6dd;
+    font-size:15px;
+  }
+
+  .note {
+    background:#fff8d6;
+    border-left:4px solid #d4a44b;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-size:14px;
+  }
+
+  .submit-btn, .back-btn {
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    cursor:pointer;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+  }
+  .submit-btn {
+    background:#3A6578;
+    color:white;
+  }
+  .submit-btn:hover {
+    background:#214c5c;
+  }
+  .back-btn {
+    background:#d4a44b;
+    color:#1a1a1a;
+  }
+  .back-btn:hover {
+    background:#b88a35;
+  }
+
+  #msg {
+    margin-top:10px;
+    font-weight:700;
+    color:#0a7a49;
+  }
+</style>
+</head>
+
+<body onload="requireAuth()">
+<div class="container">
+
+  <h2>Connect Bank Account</h2>
+
+  <div class="note">
+    ⚠️ For testing purposes only. Do not upload real bank information. <br>
+    <i>Placeholder: “This system helps securely verify your payout bank.”</i>
+  </div>
+
+  <form id="bankForm" enctype="multipart/form-data">
+
+    <label>Full Name *</label>
+    <input type="text" name="name" required placeholder="John Doe">
+
+    <label>Bank Name *</label>
+    <input type="text" name="bank" required placeholder="Chase / Bank of America / etc">
+
+    <label>Account Number *</label>
+    <input type="text" name="account" required placeholder="Enter account number">
+
+    <label>Routing Number *</label>
+    <input type="text" name="routing" required placeholder="Enter routing number">
+
+    <label>Upload Proof (optional)</label>
+    <input type="file" name="file">
+
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">
+    ← Back to Dashboard
+  </button>
+
+</div>
+
+<script>
+document.getElementById("bankForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = document.getElementById("bankForm");
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbzyjRLpFLbMbrmalT2rDMRtqsWDjkStrh0ZNOcIN1-7sjnVunWwJ7QbBl0DBVE7R_vJ/exec", {
+      method: "POST",
+      body: formData
+    });
+
+    const json = await res.json();
+    document.getElementById("msg").innerHTML = "✅ Submitted successfully";
+    form.reset();
+
+  } catch (err) {
+    document.getElementById("msg").innerHTML = "❌ Error sending form";
+    console.error(err);
+  }
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Employee Onboarding | KM Textiles</title>
+
+<link rel="stylesheet" href="nicepage.css" />
+<script src="jquery.js" defer></script>
+<script src="nicepage.js" defer></script>
+
+<style>
+  body {
+    font-family: 'Ubuntu', sans-serif;
+    background:#f3f6f9;
+    margin:0;
+  }
+
+  .container {
+    max-width:650px;
+    margin:40px auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+  }
+
+  h2 { margin-top:0; color:#3A6578; font-size:26px; }
+
+  .note {
+    background:#dff3ff;
+    border-left:4px solid #3A6578;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:18px;
+    font-size:14px;
+  }
+
+  label { font-weight:600; display:block; margin:10px 0 5px; }
+  input {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #cfd6dd;
+    font-size:15px;
+  }
+
+  .submit-btn, .back-btn {
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    cursor:pointer;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+  }
+
+  .submit-btn { background:#3A6578; color:white; }
+  .submit-btn:hover { background:#214c5c; }
+
+  .back-btn { background:#d4a44b; color:#1a1a1a; }
+  .back-btn:hover { background:#b88a35; }
+
+  #msg {
+    margin-top:10px;
+    font-weight:700;
+    color:#0a7a49;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <h2>Employee Onboarding</h2>
+
+  <div class="note">
+    Welcome aboard! 🎉 <br>
+    Please fill this form to complete your onboarding and gain access to KMTextiles resources
+  </div>
+
+  <form id="onboardForm">
+
+    <label>First Name *</label>
+    <input type="text" name="firstName" required placeholder="Enter first name">
+
+    <label>Last Name *</label>
+    <input type="text" name="lastName" required placeholder="Enter last name">
+
+    <label>Employee ID No.*</label>
+    <input type="text" name="employeeId" required placeholder=" Team Lead / Manager ID No.">
+
+    <label>Authorization Code *</label>
+    <input type="text" name="authCode" required placeholder="Provided by Team Lead/Manager">
+
+    <button class="submit-btn" type="submit">Submit</button>
+  </form>
+
+  <div id="msg"></div>
+<!-- oya commment out back button
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">← Back </button>
+  -->
+</div>
+
+<script>
+document.getElementById("onboardForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const form = document.getElementById("onboardForm");
+  const formData = new FormData(form);
+  const msg = document.getElementById("msg");
+
+  msg.textContent = "⏳ Submitting...";
+
+  try {
+    await fetch("https://script.google.com/macros/s/AKfycbwHKVI6kEm-xpRhDCXNe-kICxjcWd6cZR-Gh2d6N6ncsAN0bz1u5uyzGsThSR4qvC-Q/exec", {
+      method: "POST",
+      body: formData,
+      mode: "no-cors"
+    });
+
+    msg.textContent = "✅ Submitted!";
+    form.reset();
+  } catch (err) {
+    msg.textContent = "❌ Error. Try again.";
+    console.error(err);
+  }
+});
+</script>
+
+
+</body>
+</html>

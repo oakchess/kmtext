@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KM Textiles | Product</title>
+  <style>
+    :root {
+     /* --primary: #b19777; */
+      --primary: #86afc0;
+      --bg: #f9f9f9;
+      --text: #333;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .product-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .product-image {
+      flex: 1 1 300px;
+      background-color: #f0f0f0;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      flex: 2 1 400px;
+    }
+
+    .product-info h2 {
+      margin-top: 0;
+    }
+
+    .price {
+      font-size: 1.2rem;
+      color: var(--primary);
+      margin: 0.5rem 0 1rem;
+      font-weight: bold;
+    }
+
+    .desc {
+      line-height: 1.6;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .back-btn:hover {
+      background: #a17a55;
+    }
+
+    @media (max-width: 700px) {
+      .product-details {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>KM Textiles Product</h1>
+  </header>
+
+  <div class="container">
+    <!-- This div MUST exist for the script to work -->
+    <div id="productContainer">Loading product details...</div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sheetUrl = 'https://opensheet.elk.sh/1N3OOLKqY38zrxxvzigMVSokeu5hHBSEgHhlTWAsv_S8/products';
+      const container = document.getElementById('productContainer');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      if (!productId) {
+        container.innerHTML = '<p>No product ID provided.</p>';
+        return;
+      }
+
+      fetch(sheetUrl)
+        .then(res => res.json())
+        .then(data => {
+          const product = data.find(p => p.id.trim() === productId.trim());
+          if (!product) {
+            container.innerHTML = '<p>Product not found.</p>';
+            console.warn('Product not found for id:', productId);
+            return;
+          }
+
+          /* oya change
+          container.innerHTML = `
+            <div class="product-details">
+              <div class="product-image">
+                ${product.Image ? `<img src="${product.Image}" alt="${product.Name}">` : '<span>No Image</span>'}
+              </div>
+              <div class="product-info">
+                <h2>${product.Name}</h2>
+                <div class="price">$${product["Regular price"] || "—"}</div>
+                <div class="desc">${product.Description || "No description available."}</div>
+                <a href="shop.html" class="back-btn">← Back to Shop</a>
+              </div>
+            </div>
+          `;
+          */
+
+          container.innerHTML = `
+  <div class="product-details">
+    <div class="product-image">
+      ${product.Image ? `<img src="${product.Image}" alt="${product.Name}">` : '<span>No Image</span>'}
+    </div>
+    <div class="product-info">
+      <h2>${product.Name}</h2>
+      <div class="price">$${product["Regular price"] || "—"}</div>
+      <div class="desc">${product.Description || "No description available."}</div>
+      <div class="btns">
+        <button class="add-btn" onclick="addToCart('${product.id}', '${product.Name}', '${product["Regular price"] || "—"}')">Add to Quote</button>
+        <a href="Products.html" class="back-btn">← Back to Shop</a>
+      </div>
+    </div>
+  </div>
+`;
+
+        })
+        .catch(err => {
+          container.innerHTML = '<p>Unable to load product.</p>';
+          console.error(err);
+        });
+    });
+
+    function addToCart(id, name, price) {
+  const cart = JSON.parse(localStorage.getItem('quoteCart') || '[]');
+  if (!cart.find(item => item.id === id)) {
+    cart.push({ id, name, price });
+    localStorage.setItem('quoteCart', JSON.stringify(cart));
+    alert(`${name} added to quote.`);
+  } else {
+    alert(`${name} is already in your quote.`);
+  }
+}
+  </script>
+
+</body>
+</html>
+

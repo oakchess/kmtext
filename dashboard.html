@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Dashboard | KM Textiles</title>
+
+<link rel="stylesheet" href="nicepage.css" />
+<script src="jquery.js" defer></script>
+<script src="nicepage.js" defer></script>
+<script src="auth.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root{
+    --ink:#1d2630;
+    --muted:#6b7a88;
+    --bg:#f3f6f9;
+    --card:#ffffff;
+    --brand:#3A6578;         /* teal-blue */
+    --brand-2:#86afc0;       /* soft teal */
+    --gold:#d4a44b;
+    --rose:#ec6b6b;
+    --violet:#8a74e0;
+    --emerald:#31b67a;
+    --sky:#53a7ff;
+    --slate:#344455;
+    --shadow:0 10px 25px rgba(0,0,0,.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family: 'Ubuntu', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    margin:0; background:var(--bg); color:var(--ink);
+  }
+  .topbar{
+    padding:14px 24px; background:linear-gradient(90deg,var(--brand),var(--brand-2));
+    color:#fff; display:flex; align-items:center; justify-content:space-between;
+    box-shadow:var(--shadow);
+  }
+  .topbar .brand{display:flex; gap:12px; align-items:center; font-weight:700; letter-spacing:.3px}
+  .topbar .brand .dot{width:10px;height:10px;border-radius:50%;background:#fff;opacity:.8}
+  .topbar .right{display:flex; align-items:center; gap:12px}
+  .btn{
+    border:none; padding:.6rem .9rem; border-radius:10px; cursor:pointer; font-weight:600;
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
+  }
+  .btn-ghost{background:rgba(255,255,255,.18); color:#fff}
+  .btn-gold{background:var(--gold); color:#141414}
+  .btn-outline{background:#fff; color:var(--brand); border:1px solid #e4ecf2}
+  .container{max-width:1250px; margin:24px auto; padding:0 20px}
+
+  .welcome{
+    display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .welcome h2{margin:0; font-size:28px; color:var(--slate)}
+  .alert{
+    width:100%; background:#eaf3f7; border-left:5px solid var(--brand); padding:12px 14px;
+    border-radius:10px; color:#214150; margin:10px 0 20px;
+  }
+  .badges{display:flex; gap:8px; flex-wrap:wrap}
+  .badge{font-size:12px; padding:6px 10px; border-radius:999px; font-weight:700}
+  .b-red{background:#ffe7ea;color:#a93445}
+  .b-amber{background:#fff3d9;color:#8a6417}
+  .b-green{background:#e9fbf2;color:#0a7a49}
+  .b-blue{background:#e8f3ff;color:#1c60b3}
+
+  /* Grid sections */
+  .grid{
+    display:grid; gap:18px;
+    grid-template-columns: 1.3fr 1fr; /* left heavier */
+  }
+  @media (max-width: 980px){
+    .grid{grid-template-columns:1fr}
+  }
+
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:18px;
+  }
+  .card h3{margin:0 0 10px; color:var(--slate)}
+
+  /* KPI cards */
+  .kpis{display:grid; gap:14px; grid-template-columns:repeat(5,minmax(180px,1fr)); margin:14px 0 18px}
+  @media (max-width: 1200px){ .kpis{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width: 780px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+  .kpi{
+    background:var(--card); border-radius:14px; padding:16px; box-shadow:var(--shadow);
+    border-left:6px solid transparent;
+  }
+  .kpi .label{font-size:12px; color:var(--muted)}
+  .kpi .val{font-size:26px; font-weight:800; margin-top:4px}
+  .kpi.g1{border-color:var(--gold)}
+  .kpi.g2{border-color:var(--emerald)}
+  .kpi.g3{border-color:var(--rose)}
+  .kpi.g4{border-color:var(--violet)}
+  .kpi.g5{border-color:var(--sky)}
+
+  /* Charts (pure HTML/CSS/SVG) */
+  .charts{display:grid; gap:18px; grid-template-columns: 1.1fr 1fr}
+  @media (max-width: 980px){ .charts{grid-template-columns:1fr} }
+  .chart-title{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+  .ai-inline{display:flex; gap:10px; align-items:center}
+  .ai-inline .legend{display:flex; gap:8px}
+  .lg{display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted)}
+  .lg span{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+  /* Bar chart */
+  .bar-wrap{background:#f0f4f8;border-radius:12px;padding:12px}
+  .bar{display:grid;grid-template-columns: 120px 1fr; align-items:center; gap:12px; margin:8px 0}
+  .bar .name{font-size:13px; color:#41586a}
+  .bar .track{background:#e7edf4;border-radius:999px; height:16px; position:relative; overflow:hidden}
+  .bar .fill{height:100%; border-radius:999px}
+  .c1{background:linear-gradient(90deg,#f9c762,#d4a44b)}
+  .c2{background:linear-gradient(90deg,#79dcb2,#31b67a)}
+  .c3{background:linear-gradient(90deg,#ff8a8a,#ec6b6b)}
+  .c4{background:linear-gradient(90deg,#9c8df0,#8a74e0)}
+  .c5{background:linear-gradient(90deg,#7fb8ff,#53a7ff)}
+
+  /* Donut */
+  .donut{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center; padding:8px 0 2px;
+  }
+  .ring{
+    width:180px; height:180px; border-radius:50%;
+    background:conic-gradient(#3A6578 38%, #86afc0 22%, #d4a44b 18%, #31b67a 12%, #ec6b6b 10%);
+    position:relative;
+    box-shadow:inset 0 0 0 14px #fff, var(--shadow);
+  }
+  .ring::after{
+    content:""; position:absolute; inset:22px; border-radius:50%; background:#fff;
+  }
+  .donut-legend{display:grid; gap:8px}
+  .donut-legend .lg span{border-radius:50%}
+
+  /* Market Intelligence feed */
+  .feed{display:flex; flex-direction:column; gap:12px}
+  .feed-item{
+    background:var(--card); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow);
+    border-left:4px solid var(--brand-2);
+  }
+  .feed-item .meta{display:flex; gap:8px; flex-wrap:wrap; font-size:12px; color:var(--muted)}
+  .tag{background:#eef4ff; color:#315ea3; padding:2px 8px; border-radius:99px; font-weight:700}
+  .trend-up{color:#0e8b57; font-weight:700}
+  .trend-down{color:#b03b3b; font-weight:700}
+
+  /* Client Manifest table */
+  table{width:100%; border-collapse:collapse; background:var(--card); border-radius:14px; overflow:hidden; box-shadow:var(--shadow)}
+  th,td{padding:12px 14px; border-bottom:1px solid #eef1f4; text-align:left}
+  th{background:#2c3c4c; color:#fff; font-weight:700}
+  .status{padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700}
+  .s-pending{background:#fff3d9;color:#7a5a12}
+  .s-review{background:#e8f3ff;color:#1c60b3}
+  .s-closed{background:#e9fbf2;color:#0a7a49}
+  .s-escalated{background:#ffe7ea;color:#a93445}
+
+  /* Form */
+  form{
+    background:var(--card); border-radius:14px; box-shadow:var(--shadow);
+    padding:16px; margin-top:18px;
+  }
+  form .row{display:grid; gap:12px; grid-template-columns: 1fr 1fr}
+  @media (max-width: 780px){ form .row{grid-template-columns:1fr} }
+  input,select,textarea{
+    width:100%; padding:.8rem; border:1px solid #d5dde5; border-radius:10px; font-size:14px;
+  }
+  textarea{min-height:100px; resize:vertical}
+  .submit{background:var(--brand); color:#fff}
+  .submit:hover{background:#214c5c}
+  #formMsg{margin-top:8px; color:#0f7a4a; font-weight:700}
+
+  /* News cards */
+  .news{display:grid; gap:12px; grid-template-columns: repeat(3,1fr)}
+  @media (max-width: 980px){ .news{grid-template-columns:1fr 1fr} }
+  @media (max-width: 640px){ .news{grid-template-columns:1fr} }
+  .news .card{position:relative; overflow:hidden}
+  .pill{position:absolute; top:12px; right:12px; background:#1a2230; color:#fff; font-size:11px; padding:4px 8px; border-radius:999px; opacity:.9}
+
+  /* Lifetime value */
+  .lifetime{
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:18px; align-items:center;
+  }
+  @media (max-width: 980px){ .lifetime{grid-template-columns:1fr} }
+  .big-number{font-size:42px; font-weight:900; color:#1f2a36}
+  .progress-wrap{display:flex; flex-direction:column; gap:8px}
+  .progress{
+    height:12px; background:#e9eef3; border-radius:999px; overflow:hidden;
+  }
+  .progress > span{display:block; height:100%; background:linear-gradient(90deg,#9c8df0,#53a7ff)}
+
+  /* Chatbot */
+  .chat{
+    display:flex; flex-direction:column; gap:10px; height:360px;
+  }
+  .chat-log{
+    background:var(--card); border-radius:14px; box-shadow:var(--shadow);
+    padding:12px; flex:1; overflow:auto;
+  }
+  .msg{display:flex; gap:10px; margin:8px 0}
+  .msg.user .bubble{background:#e8f3ff; color:#1c60b3}
+  .msg.bot .bubble{background:#eff8f1; color:#0a6b44}
+  .avatar{
+    width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:#fff; background:#8a74e0; flex-shrink:0;
+  }
+  .bubble{
+    padding:10px 12px; border-radius:12px; box-shadow:var(--shadow); max-width:80%;
+  }
+  .chat-input{
+    display:flex; gap:8px;
+  }
+  .chat-input input{
+    flex:1; padding:.8rem; border:1px solid #d5dde5; border-radius:10px;
+  }
+  .chat-input button{white-space:nowrap}
+  .note-muted{font-size:12px; color:#6c7a88}
+
+  /* oya add pagination style */
+
+  /* Pagination */
+.pagination{
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.page-btn, .page-number{
+  border: 1px solid #d0d8e3;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--slate);
+  transition: 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.page-number.active{
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.page-btn:hover:not(.disabled),
+.page-number:hover:not(.active){
+  background: #f2f7fb;
+}
+
+.page-btn.disabled{
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+</style>
+</head>
+
+<body onload="requireAuth()">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="dot"></div> KM TEXTILES — ACCOUNT OPS
+    </div>
+    <div class="right">
+      <button class="btn btn-ghost" id="aiAnalyze">Analyze with AI</button>
+      <button class="btn btn-outline" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="welcome">
+      <h2>Welcome, <span id="userName">User</span></h2>
+      <div class="badges">
+        <span class="badge b-blue">US Liaison</span>
+        <span class="badge b-green">Top Performer</span>
+        <span class="badge b-amber">Confidential</span>
+      </div>
+    </div>
+
+    <div class="alert">
+      You are signed in as <b>Personal Assistant to Eric Gallardo</b> (Account Manager — North America).
+      Your access is <b>LIMITED</b> to basic tools and read-only summaries. Certain tools may be hidden or require elevated permissions.
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi g1"><div class="label">2025 Lead Pipeline</div><div class="val">51</div></div>
+      <div class="kpi g2"><div class="label">Active Negotiations</div><div class="val">9</div></div>
+      <div class="kpi g3"><div class="label">Deals Closed (YTD)</div><div class="val">12</div></div>
+      <div class="kpi g4"><div class="label">Revenue Generated</div><div class="val">$15.4M</div></div>
+      <div class="kpi g5"><div class="label">Avg Deal Size</div><div class="val">$194k</div></div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT COLUMN -->
+      <div>
+        <!-- Charts -->
+        <div class="charts">
+          <!-- Bar chart -->
+          <div class="card">
+            <div class="chart-title">
+              <h3>Leading Quarterly Sales by Product</h3>
+              <div class="ai-inline">
+                <div class="legend">
+                  <span class="lg"><span style="background:#f9c762"></span>Spinning</span>
+                  <span class="lg"><span style="background:#79dcb2"></span>Weaving</span>
+                  <span class="lg"><span style="background:#ff8a8a"></span>Finishing</span>
+                  <span class="lg"><span style="background:#9c8df0"></span>Printing</span>
+                  
+                </div>
+              </div>
+            </div>
+            <div class="bar-wrap">
+              <div class="bar">
+                <div class="name">Q1</div>
+                <div class="track"><div class="fill c1" style="width:72%"></div></div>
+              </div>
+              <div class="bar">
+                <div class="name">Q2</div>
+                <div class="track"><div class="fill c2" style="width:88%"></div></div>
+              </div>
+              <div class="bar">
+                <div class="name">Q3</div>
+                <div class="track"><div class="fill c3" style="width:61%"></div></div>
+              </div>
+              <div class="bar">
+                <div class="name">Q4</div>
+                <div class="track"><div class="fill c4" style="width:65%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donut chart -->
+          <div class="card">
+            <div class="chart-title">
+              <h3>Segment Share (US)</h3>
+              <div class="legend">
+                <span class="lg"><span style="background:#3A6578"></span>Industrial</span>
+                <span class="lg"><span style="background:#86afc0"></span>Home</span>
+                <span class="lg"><span style="background:#d4a44b"></span>Apparel</span>
+                <span class="lg"><span style="background:#31b67a"></span>Technical</span>
+                <span class="lg"><span style="background:#ec6b6b"></span>Spare Parts</span>
+              </div>
+            </div>
+            <div class="donut">
+              <div class="ring" title="Apparel 38%, Home 22%, Industrial 18%, Technical 12%, Other 10%"></div>
+              <div class="donut-legend">
+                <span class="lg"><span style="background:#3A6578"></span>Industrial — <b>37%</b></span>
+                <span class="lg"><span style="background:#86afc0"></span>Home — <b>0.1%</b></span>
+                <span class="lg"><span style="background:#d4a44b"></span>Apparel — <b>0.3%</b></span>
+                <span class="lg"><span style="background:#31b67a"></span>Technical — <b>0.6%</b></span>
+                <span class="lg"><span style="background:#ec6b6b"></span>Spare Parts — <b>62%</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+ 
+
+        <!-- Client Manifest -->
+        <div class="card" style="margin-top:18px">
+          <h3>Client Manifest</h3>
+          <table>
+            <thead>
+              <tr><th>Client Name</th><th>Status</th><th>Notes/Action</th><th>Author</th></tr>
+            </thead>
+            <tbody id="manifestBody">
+              <!-- result from sheet comes here -->
+            </tbody>
+          </table>
+          <!-- oya add pagination-->
+           <!-- Pagination (dummy) -->
+              <div class="pagination">
+                <button class="page-btn disabled">« Prev</button>
+                <button class="page-number active">1</button>
+                <button class="page-number">2</button>
+                <label>...</label>
+                <button class="page-number">7</button>
+                <button class="page-btn">Next »</button>
+              </div>
+
+
+          <!-- Update Manifest Form -->
+          <form id="entryForm">
+            <h3 style="margin-bottom:8px">Update Manifest</h3>
+            <div class="row">
+              <div>
+                <label>Client Name</label>
+                <input name="client" placeholder="e.g., Cone Denim" required />
+              </div>
+              <div>
+                <label>Status</label>
+                <select name="status" required>
+                  <option>Pending</option>
+                  <option>In Review</option>
+                  <option>Closed</option>
+                  <option>Escalated</option>
+                </select>
+              </div>
+            </div>
+            <label>Notes/Action</label>
+            <textarea name="notes" placeholder="Short context or next actions..."></textarea>
+            <button class="btn submit" type="submit">Submit</button>
+            <div id="formMsg"></div>
+            <p class="note-muted">Entries may take some time to show up on Client Manifest</p>
+          </form>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+        <!-- Lifetime Value + Progress -->
+        <div class="card lifetime">
+          <div>
+            <h3>Overall Lifetime Value (Eric Gallardo)</h3>
+            <div class="big-number">$61.3M</div>
+            <p class="note-muted">Cumulative booked revenue across US accounts managed by Eric Gallardo since 2018.</p>
+          </div>
+          <div class="progress-wrap">
+            <div>FY25 Target Attainment</div>
+            <div class="progress"><span style="width:78%"></span></div>
+            <div class="note-muted">78% of annual target achieved</div>
+            <div>Cross-sell Penetration</div>
+            <div class="progress"><span style="width:64%; background:linear-gradient(90deg,#31b67a,#86afc0)"></span></div>
+            <div class="note-muted">64% of eligible accounts</div>
+          </div>
+        </div>
+
+        <!-- Market Intelligence Feed -->
+        <div class="card">
+          <h3>Market Intelligence</h3>
+          <div class="feed">
+            <div class="feed-item">
+              <div class="meta"><span class="tag">Demand</span> <span>Lead times tightening</span> <span class="trend-up">▲</span></div>
+              <div>Mid-South apparel mills reporting increased orders for Q4 replenishment; capex interest in compact spinning.</div>
+            </div>
+            <div class="feed-item">
+              <div class="meta"><span class="tag">Policy</span> <span>Section 301 sensitivity</span> <span class="trend-up">▲</span></div>
+              <div>Buy-American projects ask for local service coverage; US-based install teams favored in RFQs.</div>
+            </div>
+            <div class="feed-item">
+              <div class="meta"><span class="tag">Pricing</span> <span>FX tailwind easing</span> <span class="trend-down">▼</span></div>
+              <div>EUR-USD shift reduces import cost advantage; quoting windows shortening to 14 days.</div>
+            </div>
+            <div class="feed-item">
+              <div class="meta"><span class="tag">Sustainability</span> <span>Traceability</span> <span class="trend-up">▲</span></div>
+              <div>Brands request integrated QA/traceability; demand rising for low-liquor dyeing retrofits.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Company News -->
+        <div class="card" style="margin-top:18px">
+          <h3>Company News</h3>
+          <div class="news">
+            <div class="card">
+              <span class="pill">Press</span>
+              <h4>KM Textiles opens Bremen support hub</h4>
+              <p class="note-muted">Improved response times for Northeast installs and service calls.</p>
+            </div>
+            <div class="card">
+              <span class="pill" style="background:#315ea3">Update</span>
+              <h4>New compact spinning retrofit kit</h4>
+              <p class="note-muted">+12–15% yarn strength reported in pilot lines; demo slots available.</p>
+            </div>
+            <div class="card">
+              <span class="pill" style="background:#0a7a49">Ops</span>
+              <h4>24/7 Remote Diagnostics</h4>
+              <p class="note-muted">Expanded coverage with encrypted telemetry for weaving and finishing.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internal Chatbot (Fake) -->
+        <div class="card" style="margin-top:18px">
+          <h3>Internal Q&A — Automated Assistant</h3>
+          <div class="chat">
+            <div id="chatLog" class="chat-log">
+              <div class="msg bot">
+                <div class="avatar">AI</div>
+                <div class="bubble">Hi! Ask me about product specs, install timelines or anything about the company.</div>
+              </div>
+            </div>
+            <div class="chat-input">
+              <input id="chatInput" placeholder="e.g., What’s the power draw for a 6-frame compact spinning line?" />
+              <button class="btn btn-gold" id="chatSend">Ask</button>
+            </div>
+            <div class="note-muted">This bot is connected to internal analytics systems</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ---- Auth bindings ----
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    document.getElementById("userName").textContent = `${user.firstName} ${user.lastName}`;
+  }
+
+  // ---- Analyze with AI (no access) ----
+  document.getElementById('aiAnalyze').addEventListener('click', () => {
+    alert("Access denied: Your account does not have AI Analysis privileges. Please contact your administrator.");
+  });
+
+  // ---- Manifest Submission (to Sheet1 placeholder) ----
+  document.getElementById('entryForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const payload = {
+      client: fd.get('client'),
+      status: fd.get('status'),
+      notes: fd.get('notes'),
+      submittedBy: user ? `${user.firstName} ${user.lastName}` : 'Unknown'
+    };
+
+    // Placeholder: POST to Apps Script Web App endpoint for Sheet1
+    // fetch('https://script.google.com/macros/s/EXEC_URL/exec', { method:'POST', body: JSON.stringify(payload) })
+    fetch("https://script.google.com/macros/s/AKfycbxXHPHnxom4YTYvyKAGLv5cxNUX4OwmvAuf607wwYX-QdJ44G0opfXYE5tK9CeGAyHIBQ/exec", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        })
+
+
+
+    // Immediate UX feedback
+    document.getElementById('formMsg').textContent = "✅ Entry received and will be validated by System.";
+    e.target.reset();
+    // Optional: scroll into view or highlight
+  });
+
+  // ---- Fake Chatbot ----
+  const chatLog = document.getElementById('chatLog');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+
+  function addMsg(role, text){
+    const wrap = document.createElement('div');
+    wrap.className = `msg ${role}`;
+    wrap.innerHTML = `
+      <div class="avatar">${role==='bot'?'AI':'U'}</div>
+      <div class="bubble">${text}</div>
+    `;
+    chatLog.appendChild(wrap);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  chatSend.addEventListener('click', () => {
+    const q = chatInput.value.trim();
+    if(!q) return;
+    addMsg('user', q);
+    chatInput.value='';
+
+    // Simulated helpful reply
+    setTimeout(()=>{
+      const canned = [
+        "I’m here to help — but it looks like I can’t respond to prompts for users without the appropriate clearance. Please request permission if needed.",
+      ];
+      const reply = canned[Math.floor(Math.random()*canned.length)];
+      addMsg('bot', reply + " Sorry.");
+    }, 600);
+  });
+
+  chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); chatSend.click(); } });
+
+async function loadManifest(){
+  const res = await fetch("https://script.google.com/macros/s/AKfycbxXHPHnxom4YTYvyKAGLv5cxNUX4OwmvAuf607wwYX-QdJ44G0opfXYE5tK9CeGAyHIBQ/exec");
+  const data = await res.json();
+  const tbody = document.getElementById("manifestBody");
+  tbody.innerHTML = "";
+
+  data.forEach(row =>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${row.client}</td>
+        <td><span class="status ${
+          row.status === "Pending" ? "s-pending" :
+          row.status === "In Review" ? "s-review" :
+          row.status === "Closed" ? "s-closed" : "s-escalated"
+        }">${row.status}</span></td>
+        <td>${row.notes}</td>
+        <td>${row.author}</td>
+      </tr>
+    `;
+  });
+}
+
+loadManifest();
+
+
+</script>
+
+</body>
+</html>

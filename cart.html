@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KM Textiles | Quote Cart</title>
+  <link rel="stylesheet" href="nicepage.css" media="screen">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      color: #b19777;
+      margin-bottom: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      color: #b19777;
+    }
+
+    button.remove {
+      background: #ccc;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button.remove:hover {
+      background: #b19777;
+      color: white;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    input, textarea {
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button.submit {
+      background: #b19777;
+      color: white;
+      border: none;
+      padding: 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button.submit:hover {
+      background: #a17a55;
+    }
+
+    .confirmation {
+      text-align: center;
+      padding: 2rem;
+      background: #f1f8f3;
+      border: 1px solid #d8e8d0;
+      border-radius: 10px;
+      color: #3a6b3f;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SITE HEADER (same as Products.html) -->
+  <header class="u-clearfix u-header u-header" id="sec-0168">
+    <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+      <a href="./" class="u-image u-logo u-image-1" data-image-width="262" data-image-height="181">
+        <img src="images/K-removebgcropped.png" class="u-logo-image u-logo-image-1" alt="KM Textiles Logo">
+      </a>
+      <nav class="u-dropdown-icon u-menu u-menu-dropdown u-offcanvas u-menu-1" data-responsive-from="MD" role="navigation">
+        <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700;">
+          <a class="u-button-style u-hamburger-link" href="#" tabindex="-1" aria-label="Open menu" aria-controls="07e9">
+            <svg class="u-svg-link" viewBox="0 0 24 24"><use xlink:href="#menu-hamburger"></use></svg>
+            <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px">
+              <g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect></g>
+            </svg>
+          </a>
+        </div>
+        <div class="u-custom-menu u-nav-container">
+          <ul class="u-nav u-unstyled u-nav-1">
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="./">Home</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="About.html">About Us</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Services.html">Services</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Products.html">Products</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Your Quote Cart</h1>
+    <p>Review selected items and send us your request</p>
+
+    <table id="cartTable">
+      <thead>
+        <tr><th>Product</th><th>Price</th><th></th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <form id="quoteForm">
+      <input type="hidden" name="products" id="productsInput">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="_replyto" placeholder="Your Email" required>
+      <textarea name="message" rows="4" placeholder="Additional details"></textarea>
+      <button type="submit" class="submit">Send Quote Request</button>
+    </form>
+
+    <div id="confirmationMessage" class="confirmation" style="display:none;">
+      Your quote request has been received. We'll be in touch shortly.<br>
+      Redirecting to Contact page...
+    </div>
+  </main>
+
+  <script>
+    const tableBody = document.querySelector('#cartTable tbody');
+    const productsInput = document.getElementById('productsInput');
+    const form = document.getElementById('quoteForm');
+    const confirmation = document.getElementById('confirmationMessage');
+
+    function renderCart() {
+      const cart = JSON.parse(localStorage.getItem('quoteCart') || '[]');
+      if (cart.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="3">Your quote cart is empty.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = cart.map(item => `
+        <tr>
+          <td>${item.name}</td>
+          <td>$${item.price}</td>
+          <td><button class="remove" onclick="removeItem('${item.id}')">Remove</button></td>
+        </tr>
+      `).join('');
+
+      productsInput.value = cart.map(i => `${i.name} - $${i.price}`).join(', ');
+    }
+
+    function removeItem(id) {
+      let cart = JSON.parse(localStorage.getItem('quoteCart') || '[]');
+      cart = cart.filter(item => item.id !== id);
+      localStorage.setItem('quoteCart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    // Handle form submission (no external request)
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      // Clear cart
+      localStorage.removeItem('quoteCart');
+
+      // Hide form and show confirmation
+      form.style.display = 'none';
+      confirmation.style.display = 'block';
+
+      // Redirect to Contact page after delay
+      setTimeout(() => {
+        window.location.href = "Contact.html";
+      }, 3000);
+    });
+
+    renderCart();
+  </script>
+</body>
+</html>

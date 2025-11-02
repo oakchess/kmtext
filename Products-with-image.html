@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>Products | KM Textiles</title>
+  <link rel="stylesheet" href="nicepage.css" media="screen">
+  <link rel="stylesheet" href="Products.css" media="screen">
+  <script class="u-script" type="text/javascript" src="jquery.js" defer></script>
+  <script class="u-script" type="text/javascript" src="nicepage.js" defer></script>
+  <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&amp;family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800">
+
+  <style>
+    /* Big Page Title */
+    .page-title {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #b19777;
+      margin: 2rem 1rem 1rem 1rem;
+    }
+
+    /* Product Grid */
+    #productGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      padding: 2rem 1rem 4rem;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    .product {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    }
+
+    .product img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product h2 {
+      font-size: 1.2rem;
+      margin: 0.8rem 0 0.4rem;
+      color: #333;
+    }
+
+    .product p {
+      color: #666;
+      font-size: 0.9rem;
+      min-height: 45px;
+    }
+
+    .product .price {
+      font-weight: bold;
+      color: #b19777;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .product a.view-btn {
+      display: inline-block;
+      margin-top: 0.8rem;
+      background: #b19777;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .product a.view-btn:hover {
+      background: #a17a55;
+    }
+  </style>
+</head>
+
+<body class="u-body u-clearfix u-xl-mode">
+
+  <!-- ORIGINAL HEADER FROM NICEPAGE -->
+  <header class="u-clearfix u-header u-header" id="sec-0168">
+    <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+      <a href="./" class="u-image u-logo u-image-1" data-image-width="262" data-image-height="181">
+        <img src="images/K-removebgcropped.png" class="u-logo-image u-logo-image-1" alt="KM Textiles Logo">
+      </a>
+      <nav class="u-dropdown-icon u-menu u-menu-dropdown u-offcanvas u-menu-1" data-responsive-from="MD" role="navigation">
+        <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px; font-weight: 700;">
+          <a class="u-button-style u-hamburger-link" href="#" tabindex="-1" aria-label="Open menu" aria-controls="07e9">
+            <svg class="u-svg-link" viewBox="0 0 24 24"><use xlink:href="#menu-hamburger"></use></svg>
+            <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px">
+              <g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect></g>
+            </svg>
+          </a>
+        </div>
+        <div class="u-custom-menu u-nav-container">
+          <ul class="u-nav u-unstyled u-nav-1">
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="./">Home</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="About.html">About Us</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Services.html">Services</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link u-active" href="Products.html">Products</a></li>
+            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Title -->
+  <h1 class="page-title">Products</h1>
+
+  <!-- Intro Section -->
+  <section class="u-clearfix u-grey-5 u-section-1">
+    <div class="u-clearfix u-sheet u-sheet-1">
+      <p class="u-text">
+        The selection below highlights key machinery we currently distribute, though our network covers many additional models and suppliers.
+        For precise configurations or unlisted equipment, please contact us directly.
+        All prices shown are approximate and subject to final quotation based on features, capacity, and delivery terms.
+      </p>
+    </div>
+  </section>
+
+  <!-- Product Grid -->
+  <section id="productGrid"></section>
+
+  <!-- Footer -->
+  <footer class="u-align-center u-clearfix u-container-align-center u-footer u-palette-1-dark-3 u-footer" id="sec-143b">
+    <!-- original footer code -->
+  </footer>
+
+  <!-- Shop JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const sheetUrl = 'https://opensheet.elk.sh/1N3OOLKqY38zrxxvzigMVSokeu5hHBSEgHhlTWAsv_S8/products';
+      const grid = document.getElementById('productGrid');
+
+      fetch(sheetUrl)
+        .then(res => res.json())
+        .then(data => {
+          grid.innerHTML = data.map(p => `
+            <div class="product">
+              <a href="product.html?id=${encodeURIComponent(p.id)}">
+                <img src="${p.Image?.trim() || 'images/placeholder.jpg'}" alt="${p.Name}" loading="lazy">
+              </a>
+              <h2>${p.Name}</h2>
+              <p>${p["Short description"] || ""}</p>
+              <div class="price">$${p["Regular price"] || "—"}</div>
+              <a href="product.html?id=${encodeURIComponent(p.id)}" class="view-btn">View Details</a>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          grid.innerHTML = '<p>Unable to load products.</p>';
+          console.error(err);
+        });
+    });
+  </script>
+
+</body>
+</html>
