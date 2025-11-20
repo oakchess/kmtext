@@ -5,12 +5,17 @@ const users = [
   { username: "jessica.valencia@kmtextiles.com", password: "LWTsn@70", firstName: "Jessica", lastName: "Valencia" }
 ];
 
-// 🚫 ALLOWED USERS (Brenda removed)
-const ALLOWED_USERNAMES = [
+// ✅ Explicit allowlist of usernames that are allowed to use the platform
+const allowedUsernames = new Set([
   "admin",
   "sarah",
   "jessica.valencia@kmtextiles.com"
-];
+]);
+
+function isAllowedUser(user) {
+  if (!user || !user.username) return false;
+  return allowedUsernames.has(user.username);
+}
 
 // 🔐 Login function
 function login() {
@@ -22,26 +27,46 @@ function login() {
     (u) => u.username === userField && u.password === passField
   );
 
-  if (found && ALLOWED_USERNAMES.includes(found.username)) {
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("user", JSON.stringify(found));
-    window.location.href = "dashboard.html";
-  } else {
-    errorMsg.textContent = "Invalid username, password, or access revoked.";
+  if (!found) {
+    errorMsg.textContent = "Invalid username or password.";
+    return;
   }
+
+  if (!isAllowedUser(found)) {
+    errorMsg.textContent = "This account no longer has access to the platform.";
+    return;
+  }
+
+  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("user", JSON.stringify(found));
+  window.location.href = "dashboard.html";
 }
 
 // 🧭 Access control for restricted pages
 function requireAuth() {
-  const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const userObj = JSON.parse(localStorage.getItem("user") || "{}");
+  const loggedIn = localStorage.getItem("isLoggedIn");
+  const userJson = localStorage.getItem("user");
 
-  // user must be logged in AND still allowed
-  const stillAllowed = userObj.username
-    ? ALLOWED_USERNAMES.includes(userObj.username)
-    : false;
+  if (loggedIn !== "true" || !userJson) {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+    return;
+  }
 
-  if (!loggedIn || !stillAllowed) {
+  let user;
+  try {
+    user = JSON.parse(userJson);
+  } catch (e) {
+    // Corrupt data → force logout
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+    return;
+  }
+
+  // 👇 This is the key part: also enforce allowlist on existing sessions
+  if (!isAllowedUser(user)) {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("user");
     window.location.href = "login.html";
