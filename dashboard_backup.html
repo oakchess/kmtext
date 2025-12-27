@@ -9,6 +9,7 @@
 <script src="jquery.js" defer></script>
 <script src="nicepage.js" defer></script>
 <script src="auth.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
   :root{
@@ -214,6 +215,45 @@
   }
   .chat-input button{white-space:nowrap}
   .note-muted{font-size:12px; color:#6c7a88}
+
+  /* oya add pagination style */
+
+  /* Pagination */
+.pagination{
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.page-btn, .page-number{
+  border: 1px solid #d0d8e3;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--slate);
+  transition: 0.2s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.page-number.active{
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.page-btn:hover:not(.disabled),
+.page-number:hover:not(.active){
+  background: #f2f7fb;
+}
+
+.page-btn.disabled{
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 </style>
 </head>
 
@@ -241,17 +281,17 @@
     </div>
 
     <div class="alert">
-      You are signed in as <b>Personal Assistant to Eric Gallardo</b> (Account Manager — US Market).
-      Access is <b>limited</b> to operational tools and read-only sales summaries. Certain analytics and pricing modules require elevated permissions.
+      You are signed in as <b>Personal Assistant to Eric Gallardo</b> (Account Manager — North America).
+      Your access is <b>LIMITED</b> to basic tools and read-only summaries. Certain tools may be hidden or require elevated permissions.
     </div>
 
     <!-- KPIs -->
     <div class="kpis">
-      <div class="kpi g1"><div class="label">2025 Lead Pipeline</div><div class="val">134</div></div>
-      <div class="kpi g2"><div class="label">Active Negotiations</div><div class="val">41</div></div>
-      <div class="kpi g3"><div class="label">Deals Closed (YTD)</div><div class="val">22</div></div>
+      <div class="kpi g1"><div class="label">2025 Lead Pipeline</div><div class="val">51</div></div>
+      <div class="kpi g2"><div class="label">Active Negotiations</div><div class="val">9</div></div>
+      <div class="kpi g3"><div class="label">Deals Closed (YTD)</div><div class="val">12</div></div>
       <div class="kpi g4"><div class="label">Revenue Generated</div><div class="val">$15.4M</div></div>
-      <div class="kpi g5"><div class="label">Avg Deal Size</div><div class="val">$699k</div></div>
+      <div class="kpi g5"><div class="label">Avg Deal Size</div><div class="val">$194k</div></div>
     </div>
 
     <div class="grid">
@@ -262,12 +302,14 @@
           <!-- Bar chart -->
           <div class="card">
             <div class="chart-title">
-              <h3>Quarterly Sales by Product Line</h3>
+              <h3>Leading Quarterly Sales by Product</h3>
               <div class="ai-inline">
                 <div class="legend">
                   <span class="lg"><span style="background:#f9c762"></span>Spinning</span>
                   <span class="lg"><span style="background:#79dcb2"></span>Weaving</span>
                   <span class="lg"><span style="background:#ff8a8a"></span>Finishing</span>
+                  <span class="lg"><span style="background:#9c8df0"></span>Printing</span>
+                  
                 </div>
               </div>
             </div>
@@ -286,7 +328,7 @@
               </div>
               <div class="bar">
                 <div class="name">Q4</div>
-                <div class="track"><div class="fill c4" style="width:95%"></div></div>
+                <div class="track"><div class="fill c4" style="width:65%"></div></div>
               </div>
             </div>
           </div>
@@ -296,60 +338,50 @@
             <div class="chart-title">
               <h3>Segment Share (US)</h3>
               <div class="legend">
-                <span class="lg"><span style="background:#3A6578"></span>Apparel</span>
+                <span class="lg"><span style="background:#3A6578"></span>Industrial</span>
                 <span class="lg"><span style="background:#86afc0"></span>Home</span>
-                <span class="lg"><span style="background:#d4a44b"></span>Industrial</span>
+                <span class="lg"><span style="background:#d4a44b"></span>Apparel</span>
                 <span class="lg"><span style="background:#31b67a"></span>Technical</span>
-                <span class="lg"><span style="background:#ec6b6b"></span>Other</span>
+                <span class="lg"><span style="background:#ec6b6b"></span>Spare Parts</span>
               </div>
             </div>
             <div class="donut">
               <div class="ring" title="Apparel 38%, Home 22%, Industrial 18%, Technical 12%, Other 10%"></div>
               <div class="donut-legend">
-                <span class="lg"><span style="background:#3A6578"></span>Apparel — <b>38%</b></span>
-                <span class="lg"><span style="background:#86afc0"></span>Home — <b>22%</b></span>
-                <span class="lg"><span style="background:#d4a44b"></span>Industrial — <b>18%</b></span>
-                <span class="lg"><span style="background:#31b67a"></span>Technical — <b>12%</b></span>
-                <span class="lg"><span style="background:#ec6b6b"></span>Other — <b>10%</b></span>
+                <span class="lg"><span style="background:#3A6578"></span>Industrial — <b>37%</b></span>
+                <span class="lg"><span style="background:#86afc0"></span>Home — <b>0.1%</b></span>
+                <span class="lg"><span style="background:#d4a44b"></span>Apparel — <b>0.3%</b></span>
+                <span class="lg"><span style="background:#31b67a"></span>Technical — <b>0.6%</b></span>
+                <span class="lg"><span style="background:#ec6b6b"></span>Spare Parts — <b>62%</b></span>
               </div>
             </div>
           </div>
         </div>
+
+ 
 
         <!-- Client Manifest -->
         <div class="card" style="margin-top:18px">
           <h3>Client Manifest</h3>
           <table>
             <thead>
-              <tr><th>Client Name</th><th>Status</th><th>Notes</th><th>Author</th></tr>
+              <tr><th>Client Name</th><th>Status</th><th>Notes/Action</th><th>Author</th></tr>
             </thead>
             <tbody id="manifestBody">
-              <tr>
-                <td>Parkdale Mills</td>
-                <td><span class="status s-pending">Pending</span></td>
-                <td>Spinning line upgrade inquiry</td>
-                <td>System</td>
-              </tr>
-              <tr>
-                <td>Elevate Textiles</td>
-                <td><span class="status s-review">In Review</span></td>
-                <td>Sample trials requested</td>
-                <td>Eric</td>
-              </tr>
-              <tr>
-                <td>Milliken &amp; Company</td>
-                <td><span class="status s-closed">Closed</span></td>
-                <td>Order finalized — install in April</td>
-                <td>Eric</td>
-              </tr>
-              <tr>
-                <td>Unifi Manufacturing</td>
-                <td><span class="status s-pending">Pending</span></td>
-                <td>Budget confirmation underway</td>
-                <td>System</td>
-              </tr>
+              <!-- result from sheet comes here -->
             </tbody>
           </table>
+          <!-- oya add pagination-->
+           <!-- Pagination (dummy) -->
+              <div class="pagination">
+                <button class="page-btn disabled">« Prev</button>
+                <button class="page-number active">1</button>
+                <button class="page-number">2</button>
+                <label>...</label>
+                <button class="page-number">7</button>
+                <button class="page-btn">Next »</button>
+              </div>
+
 
           <!-- Update Manifest Form -->
           <form id="entryForm">
@@ -369,11 +401,11 @@
                 </select>
               </div>
             </div>
-            <label>Notes</label>
+            <label>Notes/Action</label>
             <textarea name="notes" placeholder="Short context or next actions..."></textarea>
             <button class="btn submit" type="submit">Submit</button>
             <div id="formMsg"></div>
-            <p class="note-muted">Author is assigned by back-office validation in Sheet2.</p>
+            <p class="note-muted">Entries may take some time to show up on Client Manifest</p>
           </form>
         </div>
       </div>
@@ -383,9 +415,9 @@
         <!-- Lifetime Value + Progress -->
         <div class="card lifetime">
           <div>
-            <h3>Overall Lifetime Value (Eric’s Portfolio)</h3>
+            <h3>Overall Lifetime Value (Eric Gallardo)</h3>
             <div class="big-number">$61.3M</div>
-            <p class="note-muted">Cumulative booked revenue across US accounts managed by Eric Gallardo since 2021.</p>
+            <p class="note-muted">Cumulative booked revenue across US accounts managed by Eric Gallardo since 2018.</p>
           </div>
           <div class="progress-wrap">
             <div>FY25 Target Attainment</div>
@@ -399,7 +431,7 @@
 
         <!-- Market Intelligence Feed -->
         <div class="card">
-          <h3>US Textile Market Intelligence</h3>
+          <h3>Market Intelligence</h3>
           <div class="feed">
             <div class="feed-item">
               <div class="meta"><span class="tag">Demand</span> <span>Lead times tightening</span> <span class="trend-up">▲</span></div>
@@ -426,8 +458,8 @@
           <div class="news">
             <div class="card">
               <span class="pill">Press</span>
-              <h4>KM Textiles opens Charlotte support hub</h4>
-              <p class="note-muted">Improved response times for US Southeast installs and service calls.</p>
+              <h4>KM Textiles opens Bremen support hub</h4>
+              <p class="note-muted">Improved response times for Northeast installs and service calls.</p>
             </div>
             <div class="card">
               <span class="pill" style="background:#315ea3">Update</span>
@@ -444,19 +476,19 @@
 
         <!-- Internal Chatbot (Fake) -->
         <div class="card" style="margin-top:18px">
-          <h3>Internal Q&A — Textile Machinery Assistant</h3>
+          <h3>Internal Q&A — Automated Assistant</h3>
           <div class="chat">
             <div id="chatLog" class="chat-log">
               <div class="msg bot">
                 <div class="avatar">AI</div>
-                <div class="bubble">Hi! Ask about specs, power, throughput, or install timelines. (Demo replies only)</div>
+                <div class="bubble">Hi! Ask me about product specs, install timelines or anything about the company.</div>
               </div>
             </div>
             <div class="chat-input">
               <input id="chatInput" placeholder="e.g., What’s the power draw for a 6-frame compact spinning line?" />
               <button class="btn btn-gold" id="chatSend">Ask</button>
             </div>
-            <div class="note-muted">Responses are simulated for demo purposes.</div>
+            <div class="note-muted">This bot is connected to internal analytics systems</div>
           </div>
         </div>
       </div>
@@ -488,9 +520,15 @@
 
     // Placeholder: POST to Apps Script Web App endpoint for Sheet1
     // fetch('https://script.google.com/macros/s/EXEC_URL/exec', { method:'POST', body: JSON.stringify(payload) })
+    fetch("https://script.google.com/macros/s/AKfycbxXHPHnxom4YTYvyKAGLv5cxNUX4OwmvAuf607wwYX-QdJ44G0opfXYE5tK9CeGAyHIBQ/exec", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        })
+
+
 
     // Immediate UX feedback
-    document.getElementById('formMsg').textContent = "✅ Entry received and will be validated by back office.";
+    document.getElementById('formMsg').textContent = "✅ Entry received and will be validated by System.";
     e.target.reset();
     // Optional: scroll into view or highlight
   });
@@ -520,17 +558,41 @@
     // Simulated helpful reply
     setTimeout(()=>{
       const canned = [
-        "Typical power draw is 0.75–1.1 kWh/kg depending on blend and humidity.",
-        "Lead time for standard configs is 8–10 weeks; install 7–12 days per line.",
-        "For US installations, 480V 3-phase is standard; we provide step-up where needed.",
-        "Compact retrofit yields +10–15% yarn strength and lower hairiness in our pilots."
+        "I’m here to help — but it looks like I can’t respond to prompts for users without the appropriate clearance. Please request permission if needed.",
       ];
       const reply = canned[Math.floor(Math.random()*canned.length)];
-      addMsg('bot', reply + " (Demo response)");
+      addMsg('bot', reply + " Sorry.");
     }, 600);
   });
 
   chatInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); chatSend.click(); } });
+
+async function loadManifest(){
+  const res = await fetch("https://script.google.com/macros/s/AKfycbxXHPHnxom4YTYvyKAGLv5cxNUX4OwmvAuf607wwYX-QdJ44G0opfXYE5tK9CeGAyHIBQ/exec");
+  const data = await res.json();
+  const tbody = document.getElementById("manifestBody");
+  tbody.innerHTML = "";
+
+  data.forEach(row =>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${row.client}</td>
+        <td><span class="status ${
+          row.status === "Pending" ? "s-pending" :
+          row.status === "In Review" ? "s-review" :
+          row.status === "Closed" ? "s-closed" : "s-escalated"
+        }">${row.status}</span></td>
+        <td>${row.notes}</td>
+        <td>${row.author}</td>
+      </tr>
+    `;
+  });
+}
+
+loadManifest();
+
+
 </script>
+
 </body>
 </html>
