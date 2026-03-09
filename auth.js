@@ -2,7 +2,6 @@
 const users = [
   { username: "admin", password: "12345", firstName: "John", lastName: "Doe" },
   { username: "sarah", password: "98765", firstName: "Sarah", lastName: "Brown" },
-  { username: "annette.debell@km-textiles.com", password: "LWTsn@70", firstName: "Annette", lastName: "DeBell" },
   { username: "tyra.jennings@km-textiles.com", password: "LWTsn@70", firstName: "Tyra", lastName: "Jennings" }
 ];
 
@@ -10,8 +9,7 @@ const users = [
 const allowedUsernames = new Set([
   "admin",
   "sarah",
-  "tyra.jennings@km-textiles.com",
-  "annette.debell@km-textiles.com"
+  "tyra.jennings@km-textiles.com"
 ]);
 
 function isAllowedUser(user) {
