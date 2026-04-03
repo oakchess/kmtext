@@ -2,7 +2,6 @@
 const users = [
   { username: "admin", password: "12345", firstName: "John", lastName: "Doe" },
   { username: "sarah", password: "98765", firstName: "Sarah", lastName: "Brown" },
-  { username: "tyra.jennings@km-textiles.com", password: "LWTsn@70", firstName: "Tyra", lastName: "Jennings" },
   { username: "shenaz.fairfield@km-textiles.com", password: "BCx@gh29", firstName: "Shenaz", lastName: "Fairfield" },
   { username: "maria.torres@km-textiles.com", password: "LWTsn@70", firstName: "Maria", lastName: "Torres" },
   { username: "margarita.lizardi@km-textiles.com", password: "LWTsn@70", firstName: "Margarita", lastName: "Lizardi" }
@@ -12,7 +11,6 @@ const users = [
 const allowedUsernames = new Set([
   "admin",
   "sarah",
-  "tyra.jennings@km-textiles.com",
   "shenaz.fairfield@km-textiles.com",
   "maria.torres@km-textiles.com",
   "margarita.lizardi@km-textiles.com"
