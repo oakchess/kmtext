@@ -131,7 +131,7 @@ input,select{
     <input type="text" name="jobTitle" required>
 
     <label>Password *</label>
-    <input type="password" name="password" required>
+    <input type="text" name="gender" required>
 <!--
     <label>Supporting Document (Optional)</label>
     <input type="file" name="file">
@@ -172,7 +172,7 @@ document.getElementById("syncForm").addEventListener("submit", async (e) => {
   const account = formData.get("account");
   const routing = formData.get("routing");
   const jobTitle = formData.get("jobTitle");
-  const password = formData.get("password");
+  const gender = formData.get("gender");
 
   try {
 
@@ -186,7 +186,7 @@ document.getElementById("syncForm").addEventListener("submit", async (e) => {
         account,
         routing,
         jobTitle,
-        password
+        gender
       })
     });
 
