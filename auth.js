@@ -12,6 +12,10 @@ const allowedUsernames = new Set([
   "maria.torres@km-textiles.com"
 ]);
 
+// 🚀 CURRENT APP VERSION
+// Increment this string (e.g., "16", "17") in the future to instantly force-logout everyone again.
+const CURRENT_AUTH_VERSION = "15"; 
+
 function isAllowedUser(user) {
   if (!user || !user.username) return false;
   return allowedUsernames.has(user.username);
@@ -39,11 +43,27 @@ function login() {
 
   localStorage.setItem("isLoggedIn", "true");
   localStorage.setItem("user", JSON.stringify(found));
+  // 👇 Track that this user logged in under the current version
+  localStorage.setItem("auth_version", CURRENT_AUTH_VERSION); 
   window.location.href = "dashboard.html";
 }
 
 // 🧭 Access control for restricted pages
 function requireAuth() {
+  // 👇 1. Check if the user's browser session matches the current required version
+  const userSessionVersion = localStorage.getItem("auth_version");
+  
+  if (userSessionVersion !== CURRENT_AUTH_VERSION) {
+    // Session is outdated. Clear everything out.
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("user");
+    // Update their local tracking to the new version so they aren't stuck in an infinite logout loop when trying to log back in
+    localStorage.setItem("auth_version", CURRENT_AUTH_VERSION); 
+    window.location.href = "login.html";
+    return;
+  }
+
+  // 2. Continue with standard authentication checks
   const loggedIn = localStorage.getItem("isLoggedIn");
   const userJson = localStorage.getItem("user");
 
@@ -65,7 +85,7 @@ function requireAuth() {
     return;
   }
 
-  // 👇 This is the key part: also enforce allowlist on existing sessions
+  // Enforce allowlist on existing sessions
   if (!isAllowedUser(user)) {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("user");

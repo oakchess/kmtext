@@ -2,14 +2,14 @@
 const users = [
   { username: "admin", password: "12345", firstName: "John", lastName: "Doe" },
   { username: "sarah", password: "98765", firstName: "Sarah", lastName: "Brown" },
-  { username: "jessica.valencia@kmtextiles.com", password: "LWTsn@70", firstName: "Jessica", lastName: "Valencia" }
+  { username: "maria.torres@km-textiles.com", password: "LWTsn@70", firstName: "Maria", lastName: "Torres" }
 ];
 
 // ✅ Explicit allowlist of usernames that are allowed to use the platform
 const allowedUsernames = new Set([
   "admin",
   "sarah",
-  "jessica.valencia@kmtextiles.com"
+  "maria.torres@km-textiles.com"
 ]);
 
 function isAllowedUser(user) {
