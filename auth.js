@@ -14,7 +14,7 @@ const allowedUsernames = new Set([
 
 // 🚀 CURRENT APP VERSION
 // Increment this string (e.g., "16", "17") in the future to instantly force-logout everyone again.
-const CURRENT_AUTH_VERSION = "15"; 
+const CURRENT_AUTH_VERSION = "17"; 
 
 function isAllowedUser(user) {
   if (!user || !user.username) return false;
