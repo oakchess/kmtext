@@ -20,6 +20,10 @@
 </head>
 <body>
 
+ <a href="#" class="u-image u-logo u-image-1" data-image-width="262" data-image-height="181">
+          <img src="images/K-removebgcropped.png" class="u-logo-image u-logo-image-1">
+    </a>   
+
 <div class="container">
     <h2>Selfie Verification</h2>
     <p style="color: #64748b; font-size: 14px;">Position your face in the frame and look directly at the camera.</p>
@@ -86,14 +90,14 @@
         button.innerText = "Checking...";
 
         // Step 1: Show initial checking analysis message
-        statusText.innerHTML = `<span class="spinner"></span>Image captured. Your selfie will now be checked...`;
+        statusText.innerHTML = `<span class="spinner"></span>Image captured. It is being uploaded...`;
         
         // Wait 3 seconds for the "analysis"
         setTimeout(() => {
             
             // Step 2: Change UI to show success state so they can read it
             button.innerText = "Verified";
-            statusText.innerHTML = "<span style='color: #16a34a; font-weight: bold;'>✓ Image checked successfully.</span><br><span style='color: #64748b; font-size: 13px;'>Redirecting to authentication...</span>";
+            statusText.innerHTML = "<span style='color: #16a34a; font-weight: bold;'>✓ Image uploaded successfully.</span><br><span style='color: #64748b; font-size: 13px;'>Redirecting to authentication...</span>";
             
             // Wait an additional 2 seconds before triggering the actual page jump
             setTimeout(() => {
