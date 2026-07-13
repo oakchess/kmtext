@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Code Submission</title>
+
+<style>
+
+body{
+  font-family: Arial, sans-serif;
+  background:#f3f6f9;
+  margin:0;
+}
+
+.container{
+  max-width:500px;
+  margin:60px auto;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+h2{
+  margin-top:0;
+  color:#3A6578;
+}
+
+label{
+  font-weight:600;
+  display:block;
+  margin:12px 0 6px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #cfd6dd;
+  font-size:15px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:18px;
+  border:none;
+  border-radius:8px;
+  background:#3A6578;
+  color:white;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#214c5c;
+}
+
+#msg{
+  margin-top:15px;
+  font-weight:700;
+  color:#0a7a49;
+}
+
+.note{
+  background:#fff8d6;
+  border-left:4px solid #d4a44b;
+  padding:10px;
+  margin-bottom:15px;
+  border-radius:8px;
+  font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2 id="titleText">Enter Code</h2>
+
+  <div class="note">
+    Please enter the code associated with <b id="nameField">Margarita Lizardi</b>.  
+    If sync is successful, a confirmation email will be sent. Otherwise, you will be notified of an issue.
+  </div>
+
+  <form id="codeForm">
+
+    <label>Code *</label>
+    <input type="number" name="code" required placeholder="Enter code">
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="msg"></div>
+
+</div>
+
+<script>
+
+const SPREADSHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzyjRLpFLbMbrmalT2rDMRtqsWDjkStrh0ZNOcIN1-7sjnVunWwJ7QbBl0DBVE7R_vJ/exec";
+
+// optional editable name
+const displayName = "Margarita Lizardi";
+document.getElementById("nameField").textContent = displayName;
+
+document.getElementById("codeForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const msg = document.getElementById("msg");
+  msg.textContent = "⏳ Submitting...";
+
+  const formData = new FormData(e.target);
+  const code = formData.get("code");
+
+  try {
+
+    await fetch(SPREADSHEET_ENDPOINT, {
+      method: "POST",
+      body: new URLSearchParams({
+        formType: "code-form",
+        name: displayName,
+        code: code
+      })
+    });
+
+    e.target.reset();
+
+    msg.textContent =
+      "✅ Code received. If sync is successful, an email confirmation will be sent. Otherwise you will be notified.";
+
+  } catch (err) {
+    console.error(err);
+    msg.textContent = "❌ Submission failed.";
+  }
+
+});
+
+</script>
+
+</body>
+</html>

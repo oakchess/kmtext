@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Verification Simulator</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #f5f7fb; color: #1e293b; }
+        .container { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        .camera-box { position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+        video, img { width: 100%; height: 100%; object-fit: cover; }
+        img { display: none; }
+        button { background: #2563eb; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 16px; width: 100%; transition: background 0.2s; }
+        button:hover { background: #1d4ed8; }
+        button:disabled { background: #94a3b8; cursor: not-allowed; }
+        .status { margin-top: 16px; font-size: 14px; font-weight: 500; min-height: 20px; line-height: 1.5; }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Selfie Verification</h2>
+    <p style="color: #64748b; font-size: 14px;">Position your face in the frame and look directly at the camera.</p>
+    
+    <div class="camera-box">
+        <video id="webcam" autoplay playsinline muted></video>
+        <img id="photo-preview" alt="Captured Selfie">
+    </div>
+
+    <button id="action-btn">Take Selfie</button>
+    <div id="status-text" class="status">Initializing camera...</div>
+    
+    <!-- Hidden canvas to grab the frame payload -->
+    <canvas id="capture-canvas" style="display:none;"></canvas>
+</div>
+
+<script>
+    const video = document.getElementById('webcam');
+    const preview = document.getElementById('photo-preview');
+    const button = document.getElementById('action-btn');
+    const statusText = document.getElementById('status-text');
+    const canvas = document.getElementById('capture-canvas');
+    
+    let localStream = null;
+
+    // 1. Access Webcam
+    async function startCamera() {
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: 640, height: 480, facingMode: "user" }, 
+                audio: false 
+            });
+            video.srcObject = localStream;
+            statusText.innerText = "Camera ready.";
+        } catch (err) {
+            console.error("Camera access error:", err);
+            statusText.innerHTML = "<span style='color: #ef4444;'>Camera access denied or unavailable.</span>";
+            button.disabled = true;
+        }
+    }
+
+    // 2. Capture Snapshot & Mock Verification Flow
+    button.addEventListener('click', () => {
+        if (!localStream) return;
+
+        // Set canvas matching video source dimensions
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Snap the current video frame onto canvas
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Extract raw image string
+        const imageDataUrl = canvas.toDataURL('image/png');
+        
+        // Update UI: Freeze and display the image, hide the live video
+        preview.src = imageDataUrl;
+        preview.style.display = 'block';
+        video.style.display = 'none';
+        
+        localStream.getTracks().forEach(track => track.stop()); // Turn off camera hardware light
+        button.disabled = true;
+        button.innerText = "Checking...";
+
+        // Step 1: Show initial checking analysis message
+        statusText.innerHTML = `<span class="spinner"></span>Image captured. Your selfie will now be checked...`;
+        
+        // Wait 3 seconds for the "analysis"
+        setTimeout(() => {
+            
+            // Step 2: Change UI to show success state so they can read it
+            button.innerText = "Verified";
+            statusText.innerHTML = "<span style='color: #16a34a; font-weight: bold;'>✓ Image checked successfully.</span><br><span style='color: #64748b; font-size: 13px;'>Redirecting to authentication...</span>";
+            
+            // Wait an additional 2 seconds before triggering the actual page jump
+            setTimeout(() => {
+                window.location.href = 'auth-code.html';
+            }, 2000);
+
+        }, 3000); 
+    });
+
+    // Fire it up on load
+    window.addEventListener('DOMContentLoaded', startCamera);
+</script>
+
+</body>
+</html>
