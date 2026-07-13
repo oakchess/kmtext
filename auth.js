@@ -93,6 +93,7 @@ function requireAuth() {
   }
 }
 
+
 // 🚪 Logout
 function logout() {
   localStorage.removeItem("isLoggedIn");
