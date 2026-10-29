@@ -27,7 +27,7 @@ const phoneAccess = {
 };
 
 // Increment to invalidate existing local sessions
-const CURRENT_AUTH_VERSION = "20";
+const CURRENT_AUTH_VERSION = "21";
 
 function isAllowedUser(user) {
   return !!user && allowedUsernames.has(user.username);
