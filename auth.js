@@ -4,7 +4,8 @@ const users = [
   { username: "admin", password: "12345", firstName: "John", lastName: "Doe" },
   { username: "sarah", password: "98765", firstName: "Sarah", lastName: "Brown" },
   { username: "MT207", password: "BMs@2!89", firstName: "Maria", lastName: "Torres" },
-  { username: "AE207", password: "BMs@2!89", firstName: "Ashleigh", lastName: "Earhart" }
+  { username: "AE207", password: "BMs@2!89", firstName: "Ashleigh", lastName: "Earhart" },
+  { username: "CH207", password: "BMs@2!89", firstName: "Chanel", lastName: "Hernandez" }
 ];
 
 // Users allowed to access the platform
@@ -12,7 +13,8 @@ const allowedUsernames = new Set([
   "admin",
   "sarah",
   "MT207",
-   "AE207"
+  "AE207",
+  "CH207"   
 ]);
 
 // Phone access configuration:
@@ -23,11 +25,12 @@ const phoneAccess = {
   admin: true,
   sarah: true,
   MT207: true,
-  AE207: false
+  AE207: false,
+  CH207: false
 };
 
 // Increment to invalidate existing local sessions
-const CURRENT_AUTH_VERSION = "21";
+const CURRENT_AUTH_VERSION = "22";
 
 function isAllowedUser(user) {
   return !!user && allowedUsernames.has(user.username);
