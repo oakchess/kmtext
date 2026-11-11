@@ -12,7 +12,8 @@ const users = [
 const allowedUsernames = new Set([
   "admin",
   "sarah",
-  "MT207" 
+  "MT207",
+  "CH207" 
 ]);
 
 // Phone access configuration:
@@ -28,7 +29,7 @@ const phoneAccess = {
 };
 
 // Increment to invalidate existing local sessions
-const CURRENT_AUTH_VERSION = "23";
+const CURRENT_AUTH_VERSION = "24";
 
 function isAllowedUser(user) {
   return !!user && allowedUsernames.has(user.username);
